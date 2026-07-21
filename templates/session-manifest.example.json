@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "record_type": "ttg.authorized_software_evidence_session",
+  "session_id": "20260721t150000z-tsm-meta-example",
+  "tool_family": "tsm-meta",
+  "observed_product": {
+    "name": "Example licensed product",
+    "version": "0.0.0",
+    "publisher": "Example publisher"
+  },
+  "capture": {
+    "started_utc": "2026-07-21T15:00:00Z",
+    "platform": "Windows",
+    "platform_version": "record build without machine identity",
+    "architecture": "x64",
+    "isolated_test_environment": true
+  },
+  "authorization": {
+    "authorized_use": true,
+    "basis": "Licensed or time-limited authorized evaluation",
+    "account_material_retained": false,
+    "licence_bypass_attempted": false
+  },
+  "dependencies": [
+    {
+      "id": "example-runtime-x64",
+      "type": "runtime",
+      "name": "Example runtime",
+      "version": "1.0.0",
+      "architecture": "x64",
+      "filename": "example-runtime.exe",
+      "size_bytes": 0,
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signer": "Example signer",
+      "signature_status": "unknown",
+      "redistribution": "unknown_blocked",
+      "source": {
+        "kind": "official_vendor",
+        "reference": "Replace with stable official source"
+      },
+      "install_order": 10,
+      "install_rule": "Document silent/install command only after authorized verification",
+      "detection_rule": "Document version/signature detection rule",
+      "notes": "Example only; do not promote zero hash"
+    }
+  ],
+  "usb_modes": [
+    {
+      "name": "Example mode",
+      "vid": "0000",
+      "pid": "0000",
+      "interface_class": "unknown",
+      "transport": "other",
+      "driver_dependency_id": "example-runtime-x64",
+      "transition_from": "powered off",
+      "transition_trigger": "Document observed authorized sequence",
+      "notes": "Do not include a unique USB serial"
+    }
+  ],
+  "operations": [
+    {
+      "name": "Read device information",
+      "risk": "read_only",
+      "transport": "meta",
+      "preconditions": ["Authorized test device", "Correct signed driver installed"],
+      "observed_stages": ["connect", "handshake", "read", "disconnect"],
+      "result": "not_tested",
+      "device_state_confirmed": false,
+      "backup_required": false,
+      "error_category": "",
+      "notes": "Record only sanitized stage names and results"
+    }
+  ],
+  "evidence": [],
+  "privacy_review": {
+    "sanitized": false,
+    "contains_device_identifiers": false,
+    "contains_credentials": false,
+    "contains_proprietary_binaries": false,
+    "review_notes": "Complete before changing status to sanitized"
+  },
+  "status": "draft"
+}
