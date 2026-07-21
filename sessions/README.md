@@ -1,10 +1,21 @@
-# Sanitized Capture Sessions
+# Sanitized TTG Capture Sessions
 
 Each committed session belongs under:
 
 ```text
-sessions/<tool-family>/<session-id>/
+sessions/<ttg-tool-family>/<session-id>/
 ```
+
+The tool family must start with `ttg-`, for example:
+
+```text
+sessions/ttg-meta/
+sessions/ttg-adb/
+sessions/ttg-fastboot/
+sessions/ttg-qualcomm/
+```
+
+External product names belong only in the session manifest's `observed_product` object and, when useful, the observed-product portion of the session ID. They must not replace the TTG tool-family name.
 
 Minimum committed contents:
 
