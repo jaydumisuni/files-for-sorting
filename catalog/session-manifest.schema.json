@@ -23,7 +23,7 @@
     "schema_version": { "const": "1.0" },
     "record_type": { "const": "ttg.authorized_software_evidence_session" },
     "session_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{5,127}$" },
-    "tool_family": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "tool_family": { "type": "string", "pattern": "^ttg-[a-z0-9][a-z0-9._-]{0,75}$" },
     "observed_product": {
       "type": "object",
       "additionalProperties": false,
