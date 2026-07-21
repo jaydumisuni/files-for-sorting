@@ -1,0 +1,60 @@
+# Proprietary/vendor binaries and archives
+*.exe
+*.dll
+*.sys
+*.msi
+*.msix
+*.appx
+*.apk
+*.ipa
+*.bin
+*.img
+*.pac
+*.scatter
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+# Credentials, keys, sessions and local configuration
+.env
+.env.*
+*.key
+*.pem
+*.pfx
+*.p12
+*.cer
+*.crt
+*token*
+*cookie*
+*session*
+*credential*
+*account*
+secrets/
+private/
+
+# Device/customer data
+*.pcap
+*.pcapng
+*.dmp
+*.dump
+*.nvram
+*.nvdata
+*.proinfo
+raw-logs/
+customer-data/
+
+# Generated local evidence before sanitization
+.local-captures/
+work/
+temp/
+tmp/
+
+# Development noise
+__pycache__/
+*.py[cod]
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
