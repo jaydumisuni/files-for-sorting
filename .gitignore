@@ -17,7 +17,7 @@
 *.tar
 *.gz
 
-# Credentials, keys, sessions and local configuration
+# Credentials, keys, auth sessions and local configuration
 .env
 .env.*
 *.key
@@ -26,11 +26,11 @@
 *.p12
 *.cer
 *.crt
-*token*
-*cookie*
-*session*
-*credential*
-*account*
+*token-cache*
+*auth-cookie*
+*auth-session*
+*credential-cache*
+*rented-account*
 secrets/
 private/
 
