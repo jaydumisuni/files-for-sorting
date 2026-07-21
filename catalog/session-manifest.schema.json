@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://thetechguyds.com/schemas/intake-session-v1.json",
+  "title": "THETECHGUY authorized software evidence session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_type",
+    "session_id",
+    "tool_family",
+    "observed_product",
+    "capture",
+    "authorization",
+    "dependencies",
+    "usb_modes",
+    "operations",
+    "evidence",
+    "privacy_review",
+    "status"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "record_type": { "const": "ttg.authorized_software_evidence_session" },
+    "session_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{5,127}$" },
+    "tool_family": { "type": "string", "minLength": 2, "maxLength": 80 },
+    "observed_product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "publisher"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string" }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_utc", "platform", "architecture", "isolated_test_environment"],
+      "properties": {
+        "started_utc": { "type": "string", "format": "date-time" },
+        "platform": { "type": "string" },
+        "platform_version": { "type": "string" },
+        "architecture": { "enum": ["x86", "x64", "arm64", "other"] },
+        "isolated_test_environment": { "type": "boolean" }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorized_use", "account_material_retained", "licence_bypass_attempted"],
+      "properties": {
+        "authorized_use": { "type": "boolean" },
+        "basis": { "type": "string" },
+        "account_material_retained": { "const": false },
+        "licence_bypass_attempted": { "const": false }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/dependency" }
+    },
+    "usb_modes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/usbMode" }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/operation" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "privacy_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sanitized", "contains_device_identifiers", "contains_credentials", "contains_proprietary_binaries"],
+      "properties": {
+        "sanitized": { "type": "boolean" },
+        "contains_device_identifiers": { "const": false },
+        "contains_credentials": { "const": false },
+        "contains_proprietary_binaries": { "const": false },
+        "review_notes": { "type": "string" }
+      }
+    },
+    "status": {
+      "enum": ["draft", "captured", "sanitized", "reviewed", "approved_for_promotion", "blocked"]
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "name", "version", "architecture", "redistribution", "source"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]+$" },
+        "type": { "enum": ["application", "runtime", "driver", "service", "library", "database", "firmware", "configuration", "other"] },
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "architecture": { "enum": ["x86", "x64", "arm64", "any", "unknown"] },
+        "filename": { "type": "string" },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "signer": { "type": "string" },
+        "signature_status": { "enum": ["valid", "invalid", "unsigned", "unknown"] },
+        "redistribution": { "enum": ["redistributable", "vendor_fetch", "operator_supplied", "metadata_only", "unknown_blocked"] },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "reference"],
+          "properties": {
+            "kind": { "enum": ["official_vendor", "operating_system", "licensed_operator", "owned_artifact", "unknown"] },
+            "reference": { "type": "string" }
+          }
+        },
+        "install_order": { "type": "integer", "minimum": 0 },
+        "install_rule": { "type": "string" },
+        "detection_rule": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "usbMode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "vid", "pid", "transport"],
+      "properties": {
+        "name": { "type": "string" },
+        "vid": { "type": "string", "pattern": "^[0-9A-Fa-f]{4}$" },
+        "pid": { "type": "string", "pattern": "^[0-9A-Fa-f]{4}$" },
+        "interface_class": { "type": "string" },
+        "transport": { "enum": ["usb-serial", "winusb", "libusb", "adb", "fastboot", "mtp", "diag", "meta", "other"] },
+        "driver_dependency_id": { "type": "string" },
+        "transition_from": { "type": "string" },
+        "transition_trigger": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "risk", "transport", "preconditions", "observed_stages", "result"],
+      "properties": {
+        "name": { "type": "string" },
+        "risk": { "enum": ["read_only", "state_change", "destructive"] },
+        "transport": { "type": "string" },
+        "preconditions": { "type": "array", "items": { "type": "string" } },
+        "observed_stages": { "type": "array", "items": { "type": "string" } },
+        "result": { "enum": ["success", "failed", "partial", "not_tested"] },
+        "device_state_confirmed": { "type": "boolean" },
+        "backup_required": { "type": "boolean" },
+        "error_category": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "sha256", "sanitized"],
+      "properties": {
+        "path": { "type": "string" },
+        "kind": { "enum": ["file_inventory", "runtime_inventory", "sanitized_log", "screenshot", "manual_observation", "test_result", "other"] },
+        "sha256": { "$ref": "#/$defs/sha256" },
+        "sanitized": { "const": true },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}
