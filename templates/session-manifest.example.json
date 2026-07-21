@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "record_type": "ttg.authorized_software_evidence_session",
-  "session_id": "20260721t150000z-tsm-meta-example",
-  "tool_family": "tsm-meta",
+  "session_id": "20260721t150000z-ttg-meta-example",
+  "tool_family": "ttg-meta",
   "observed_product": {
-    "name": "Example licensed product",
+    "name": "Example licensed external product",
     "version": "0.0.0",
     "publisher": "Example publisher"
   },
@@ -23,7 +23,7 @@
   },
   "dependencies": [
     {
-      "id": "example-runtime-x64",
+      "id": "ttg-example-runtime-x64",
       "type": "runtime",
       "name": "Example runtime",
       "version": "1.0.0",
@@ -51,7 +51,7 @@
       "pid": "0000",
       "interface_class": "unknown",
       "transport": "other",
-      "driver_dependency_id": "example-runtime-x64",
+      "driver_dependency_id": "ttg-example-runtime-x64",
       "transition_from": "powered off",
       "transition_trigger": "Document observed authorized sequence",
       "notes": "Do not include a unique USB serial"

@@ -1,6 +1,12 @@
 # Authorized Capture Workflow
 
-This workflow is for interoperability, installer planning and validation on software/accounts/devices the operator is authorized to use.
+This workflow is for interoperability, installer planning and validation on software, accounts and devices the operator is authorized to use.
+
+## Naming rule
+
+The session family is always a TTG family such as `ttg-meta`, `ttg-adb`, `ttg-fastboot` or `ttg-qualcomm`.
+
+The external application being examined belongs only in `observed_product`. For example, TSM may be recorded as the observed product for one authorized capture, but it must not be used as our tool-family, engine, folder or runtime name.
 
 ## 1. Prepare the workstation
 
@@ -16,10 +22,12 @@ Run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/New-CaptureSession.ps1 `
-  -ToolFamily "tsm-meta" `
-  -ProductName "Observed product" `
+  -ToolFamily "ttg-meta" `
+  -ProductName "Observed external product" `
   -ProductVersion "x.y.z"
 ```
+
+For an authorized TSM observation, `ProductName` may identify TSM because that field records the external source. The created folder and `tool_family` still remain `ttg-meta`.
 
 The script creates a session folder and a starter manifest. Keep raw working material outside the Git repository until it is sanitized.
 
@@ -79,7 +87,7 @@ Do not commit authorization headers, cookies, signed temporary URLs, access toke
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/Collect-FileInventory.ps1 `
   -TargetPath "C:\Approved\ObservedTool" `
-  -SessionDirectory "sessions\tsm-meta\20260721T150000Z-observed-product"
+  -SessionDirectory "sessions\ttg-meta\20260721T150000Z-ttg-meta-observed-product"
 ```
 
 The collector writes metadata only. It does not copy the target files.
@@ -110,9 +118,9 @@ Before committing a session:
 
 ## 7. Promotion
 
-A reviewed intake record can later be transformed into the Software Builder package contract:
+A reviewed intake record can later be transformed into the Software Builder TTG package contract:
 
-- exact tool/dependency ID;
+- exact TTG tool/dependency ID;
 - version and architecture;
 - approved source;
 - file name and expected size;
@@ -121,4 +129,4 @@ A reviewed intake record can later be transformed into the Software Builder pack
 - channel and rollback rule;
 - redistribution class.
 
-Missing, contradictory or unlicensed evidence blocks promotion.
+Missing, contradictory, externally branded or unlicensed internal metadata blocks promotion.

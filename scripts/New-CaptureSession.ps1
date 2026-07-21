@@ -36,6 +36,11 @@ $started = [DateTimeOffset]::UtcNow
 $timestamp = $started.ToString("yyyyMMdd'T'HHmmss'Z'")
 $toolSlug = ConvertTo-Slug $ToolFamily
 $productSlug = ConvertTo-Slug $ProductName
+
+if (-not $toolSlug.StartsWith("ttg-", [StringComparison]::Ordinal)) {
+    throw "ToolFamily must use a TTG internal name such as ttg-meta. External product names belong in ProductName only."
+}
+
 $sessionId = "$($timestamp.ToLowerInvariant())-$toolSlug-$productSlug"
 $sessionDirectory = Join-Path (Join-Path $OutputRoot $toolSlug) $sessionId
 
@@ -89,16 +94,17 @@ $manifestPath = Join-Path $sessionDirectory "session-manifest.json"
 $manifest | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 
 $notes = @"
-# Capture notes
+# TTG capture notes
 
 Session: $sessionId
-Product: $ProductName $ProductVersion
+TTG family: $toolSlug
+Observed external product: $ProductName $ProductVersion
 
 Record only sanitized interoperability and dependency evidence. Do not paste credentials, device identifiers, proprietary binaries, temporary signed URLs or customer data here.
 "@
 $notes | Set-Content -LiteralPath (Join-Path $sessionDirectory "NOTES.md") -Encoding utf8
 
-Write-Host "Created authorized capture session:"
+Write-Host "Created authorized TTG capture session:"
 Write-Host "  $sessionDirectory"
 Write-Host "Manifest:"
 Write-Host "  $manifestPath"

@@ -10,6 +10,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+TTG_TOOL_FAMILY_RE = re.compile(r"^ttg-[a-z0-9][a-z0-9._-]{0,75}$")
 SECRET_RE = re.compile(
     r"(?i)(github_pat_|gh[pousr]_|bearer\s+[a-z0-9._-]+|"
     r"authorization\s*[:=]|password\s*[:=]|cookie\s*[:=]|token\s*[:=])"
@@ -100,6 +101,14 @@ def validate_manifest(path: Path, errors: list[str]) -> None:
         fail(errors, path, "record_type is invalid")
     if payload.get("status") not in STATUSES:
         fail(errors, path, "status is invalid")
+
+    tool_family = payload.get("tool_family")
+    if not isinstance(tool_family, str) or not TTG_TOOL_FAMILY_RE.fullmatch(tool_family):
+        fail(
+            errors,
+            path,
+            "tool_family must be an internal TTG name such as ttg-meta; external product names belong in observed_product",
+        )
 
     authorization = payload.get("authorization")
     if not isinstance(authorization, dict):
