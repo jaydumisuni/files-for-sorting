@@ -28,6 +28,19 @@ function Get-TextSha256 {
     }
 }
 
+function Get-SafeRelativePath {
+    param(
+        [Parameter(Mandatory = $true)][string]$Root,
+        [Parameter(Mandatory = $true)][string]$FullPath
+    )
+
+    $rootPath = [IO.Path]::GetFullPath($Root).TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
+    $filePath = [IO.Path]::GetFullPath($FullPath)
+    $rootUri = New-Object System.Uri($rootPath)
+    $fileUri = New-Object System.Uri($filePath)
+    return [Uri]::UnescapeDataString($rootUri.MakeRelativeUri($fileUri).ToString())
+}
+
 $targetRoot = (Resolve-Path -LiteralPath $TargetPath).Path
 $sessionRoot = (Resolve-Path -LiteralPath $SessionDirectory).Path
 $manifestPath = Join-Path $sessionRoot "session-manifest.json"
@@ -50,7 +63,7 @@ $skipped = [System.Collections.Generic.List[object]]::new()
 
 $files = Get-ChildItem -LiteralPath $targetRoot -File -Recurse -ErrorAction Stop | Sort-Object FullName
 foreach ($file in $files) {
-    $relativePath = [IO.Path]::GetRelativePath($targetRoot, $file.FullName).Replace("\", "/")
+    $relativePath = Get-SafeRelativePath -Root $targetRoot -FullPath $file.FullName
     $extension = $file.Extension.ToLowerInvariant()
 
     if ($blockedExtensions -contains $extension) {
